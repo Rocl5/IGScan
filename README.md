@@ -11,9 +11,9 @@ Usage: python3 IGScan.py -u testphp.vulnweb.com
 ```
 >探测多个域名
 首先需要编辑一个targets.txt，写入需要探测的域名，使用参数-f指定文件
-**Usage:**
+
 ```
-python3 GTL.py -f targets.txt 
+Usage: python3 IGScan.py -f targets.txt 
 ```
 ## Run screenshot
 ![image](https://github.com/ro4lsc/GTL/blob/master/screenshot.png)
