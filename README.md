@@ -1,6 +1,6 @@
 # IGScan(Infomation Gathering Scan)
 ## What can it do? 
-一、收集子域名，并将可访问的链接放入到result.txt中， 子域名放到subdomain.txt中
+一、收集子域名
 <br/>
 二、端口扫描(直接输出)
 <br/>
