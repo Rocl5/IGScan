@@ -1,82 +1,61 @@
 import os
+import sys
 import time
 from Script.UseGetSubdomain import GetDomain
 from Script.UsePortScan import PortScan
-from Script.CheckDomain import CheckDomain
-
-
+from Script.UseCheckURL import CheckURL
+from Script.UseWebAnaylzer import Anaylzer
 
 class Subdomain:
-    def __init__(self, url, targets_file):
-        self.url = url
-        self.targets_file = targets_file
+    def __init__(self):
+        self.subdomain_file = 'Output/subdomain.txt'
 
+    def url_subdomain(self, url):
+        Getdomain = GetDomain()
+        Getdomain.url_Getdomain(url)
 
-    def file_subdomain(self):
-        if self.targets_file != '' and self.targets_file != None:
-            # print(self.targets_file)
-            if os.path.exists('subdomain.txt'):
-                if os.path.getsize('subdomain.txt') > 0:
-                    print(
-                        '\033[031m[WARN]\033[0m Check \033[032msubdomain.txt\033[0m exists and it not \033[031mnull\033[0m!')
-                    YorN_GetSubdomain = input(
-                        '\033[34m[INFO]\033[0m Have You need to subdomain detect? [\033[032mY\033[0m/\033[031mN\033[0m] ')
-                    if YorN_GetSubdomain == 'Y' or YorN_GetSubdomain == 'y':
-                        starttime = time.time()
-                        Getdomain = GetDomain(url='', targets_filename=self.targets_file)  # GetDomain模块
-                        Getdomain.file_Getdomain()
-                        Checkdomain = CheckDomain()  # CheckDomain模块
-                        Checkdomain.start()
-                        endtime = time.time()
-                        print('\033[32m[SUCC]\033[0m All target links have been collected!')
-                        print('\033[32m[TIME]\033[0m The program is running time: %.2fs' % (endtime - starttime))
-                        exit()
-                    else:
-                        starttime = time.time()
-                        Checkdomain = CheckDomain()
-                        Checkdomain.start()
-                        endtime = time.time()
-                        print('\033[32m[SUCC]\033[0m All target links have been collected!')
-                        print('\033[32m[TIME]\033[0m The program is running time: %.2fs' % (endtime - starttime))
-                        exit()
+    def file_subdomain(self, targets_filename):
+        Getdomain = GetDomain()
+        Getdomain.file_Getdomain(targets_filename)
 
-            starttime = time.time()
-            Getdomain = GetDomain(url='', targets_filename=self.targets_file)
-            Getdomain.file_Getdomain()
-            Checkdomain = CheckDomain()
-            Checkdomain.start()
-            endtime = time.time()
+class Checkurl:
+    def url_Check(self):  # 当两个模块一起使用的时候可以
+        Checkurl = CheckURL()
+        Checkurl.url_start()
 
-            print('\033[32m[SUCC]\033[0m All target links have been collected!')
-            print('\033[34m[TIME]\033[0m The program is running time: %.2fs' % (endtime - starttime))
-
-    def url_subdomain(self):
-        starttime = time.time()
-        Getdomain = GetDomain(url=self.url, targets_filename='')
-        Getdomain.url_Getdomain()
-        Checkdomain = CheckDomain()
-        Checkdomain.start()
-        endtime = time.time()
-
-        print('\033[32m[SUCC]\033[0m All target links have been collected!')
-        print('\033[34m[TIME]\033[0m The program is running time: %.2fs' % (endtime - starttime))
-
+    def file_Check(self, targets_file):
+        Checkurl = CheckURL()
+        Checkurl.file_start(targets_file)
 
 
 class Portscan:
-    def __init__(self, hosts):
-        self.hosts = hosts
+    def __init__(self):
+        pass
 
-    def nmapscan(self):
+    def nmapscan(self, hosts):
         starttime = time.time()
-        nmapscan = PortScan(self.hosts)
-        nmapscan.nmapscan()
+        nmapscan = PortScan()
+        nmapscan.nmapscan(hosts)
         endtime = time.time()
         print('\033[34m[TIME]\033[0m The program is running time: %.2fs' % (endtime - starttime))
 
-    def masscan(self):
+    def masscan(self, hosts):
         starttime = time.time()
-        masscan = PortScan(self.hosts)
-        masscan.masscan()
+        masscan = PortScan()
+        masscan.masscan(hosts)
         endtime = time.time()
         print('\033[34m[TIME]\033[0m The program is running time: %.2fs' % (endtime - starttime))
+
+
+class Webanaylzer:
+    def one_analyzer(self, target_url):
+        w = Anaylzer()
+        w.one_module_start(target_url)
+
+    def url_analyzer(self):
+        w = Anaylzer()
+        w.url_start()
+    def file_analyzer(self, targets_file):
+        w = Anaylzer()
+        w.file_start(targets_file)
+

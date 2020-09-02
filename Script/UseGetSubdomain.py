@@ -1,70 +1,84 @@
+import time
 from Core.GetSubdomain import GetSubdomain
+import queue
+import threading
 
 
 class GetDomain:
 
-    def __init__(self, url, targets_filename):
-        self.url = url
+    def __init__(self):
+        self.subdomain_num = 0
+        self.targets_queue = queue.Queue()
         self.arr_subdomain = []  # 去重后的域名
-        self.targets_filename = targets_filename  # 放置域名的txt
-        self.subdomain_filename = 'subdomain.txt'  # 子域名result
+        self.subdomain_filename = 'Output/subdomain.txt'  # 子域名result
         self.GetSubdomain = GetSubdomain()
 
-    def UseApi(self, arr_subdomain, url):
-        GetSubdomain = self.GetSubdomain
-        for i in GetSubdomain.ce_baidu(url):
-            arr_subdomain.append(i + '\n')
-        for i in GetSubdomain.hackertarget(url):
-            arr_subdomain.append(i + '\n')
-        for i in GetSubdomain.IP138(url):
-            arr_subdomain.append(i + '\n')
-        for i in GetSubdomain.crtsh(url):
-            arr_subdomain.append(i + '\n')
-        for i in GetSubdomain.qianxun(url):
-            arr_subdomain.append(i + '\n')
-        for i in GetSubdomain.aizhan(url):
-            arr_subdomain.append(i + '\n')
-
-
-    def url_Getdomain(self):
+    # -u参数
+    def url_Getdomain(self, url):
         print('\033[034m[INFO]\033[0m GetDomain Module Running!')
         open_subdomainfile = open(self.subdomain_filename, 'w')
         arr_subdomain = self.arr_subdomain
-        url = self.url
         url = url.strip('\n')
-        self.UseApi(self.arr_subdomain, url)
-            # 自定义去重方法
-        for i in range(len(arr_subdomain), 0, -1):
-            for j in range(1, len(arr_subdomain)):  # 这个为0就把自己给删了，所以需要注意
-                try:
-                    if arr_subdomain[i] == arr_subdomain[i-j]:
-                        del arr_subdomain[i]
-                except:
-                    pass
+        GetSubdomain = self.GetSubdomain
+        for i in GetSubdomain.all2one(url):
+            arr_subdomain.append(i)
+        arr_subdomain = list(set(arr_subdomain))
+        self.subdomain_num = len(arr_subdomain)
         for i in arr_subdomain:
-            open_subdomainfile.write(i)
+            open_subdomainfile.write(i+'\n')
         open_subdomainfile.close()
+        print('\033[034m[INFO]\033[0m Number of subdomains: %s' % (self.subdomain_num))
         print('\033[032m[SUCC]\033[0m GetDomain Module Has Finished Running!')
 
-    def file_Getdomain(self):
+    # -f参数
+    def file_Getdomain(self, targets_filename):
         # --定义header头
+        starttime = time.time()
+        targets_queue = self.targets_queue
         print('\033[034m[INFO]\033[0m GetDomain Module Running!')
         open_subdomainfile = open(self.subdomain_filename, 'w')  # 写入subdomain.txt文件
         arr_subdomain = self.arr_subdomain
-        with open(file=self.targets_filename, mode='r') as domain:
+        with open(file=targets_filename, mode='r') as domain:
             for url in domain.readlines():
-                print('\033[34m[INFO]\033[0m Retrieving: %s' % url, end="")
                 url = url.strip('\n')
-                self.UseApi(self.arr_subdomain, url)
-                    # --- 域名去重
-            for i in range(len(arr_subdomain), 0, -1):
-                for j in range(1, len(arr_subdomain)):  # 这个为0就把自己给删了，所以需要注意
-                    try:
-                        if arr_subdomain[i] == arr_subdomain[i-j]:
-                            del arr_subdomain[i]
-                    except:
-                        pass
-            for i in arr_subdomain:
-                open_subdomainfile.write(i)
+                targets_queue.put(url)
+        total_num = targets_queue.qsize()
+        print('\033[34m[INFO]\033[0m The total number of targets to be detected is: %d' % total_num)
+        GetSubdomain = self.GetSubdomain
+        thread_list = []
+        def thread_file_Getdomain():
+            while not targets_queue.empty():
+                get_url = targets_queue.get()
+                endtime = time.time()
+                program_time = (endtime - starttime)
+                threading.Thread(target=self.file_Getdomain_progress, args=(total_num, program_time,)).start()
+                for i in GetSubdomain.all2one(get_url):
+                    arr_subdomain.append(i)
+        for i in range(15):
+            t = threading.Thread(target=thread_file_Getdomain)
+            thread_list.append(t)
+        for t in thread_list:
+            time.sleep(0.01)
+            t.start()
+        for t in thread_list:
+            t.join()
+        # --- 域名去重
+        arr_subdomain = list(set(arr_subdomain))
+        self.subdomain_num = len(arr_subdomain)
+        for i in arr_subdomain:
+            open_subdomainfile.write(i+'\n')
         open_subdomainfile.close()
+        print('\n\033[034m[INFO]\033[0m Number of subdomains: %s' % (self.subdomain_num))
         print('\033[032m[SUCC]\033[0m GetDomain Module Has Finished Running!')
+
+    # 进度条
+    def file_Getdomain_progress(self, total_num, time):
+        """
+        :param total_num: 所有需要探测的域名数量
+        :param time: 程序已运行时长
+        :return:
+        """
+        get_num = total_num - self.targets_queue.qsize()
+        Remaining_time = (total_num * time / get_num) - time  # 程序剩余运行时间 预计总时间-已运行时间
+        print('\r\033[34m[PROG]\033[0m Detected: %d Progress: %.2f %% Time: %.2fs The Remaining time: %.2fs' % (
+            get_num, (get_num / total_num * 100), time, Remaining_time), end="")

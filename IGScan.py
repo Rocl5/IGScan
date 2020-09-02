@@ -1,38 +1,38 @@
 import argparse
-from Controller.Controller import Subdomain, Portscan
-
-
+from Controller.Start import IGScan
 
 """
 @auther: ro4lsc 
-@version: v0.2
-@descript: 配合Getsubdomain模块，达到收集域名的效果，并且将访问有效的链接放到result.txt里面
+@version: v0.3
+@descript: GetSubdomain模块: 获取子域名
+           CheckURL模块: 判断存活链接
+           PortScan模块: 端口扫描
+           Anaylzer模块: Web容器指纹扫描
 @time: 2020-08-09
 """
-
+version = '0.8'
+author = 'ro4lsc'
+IGScan_banner = """
+Welcome to IGScan!
+Version:%s Author: %s
+""" % (version, author)
+# Usage: python3 IGScan.py -u testphp.vulnweb.com -m subdomain,checkurl,webanaylzer
+#        python3 IGScan.py -f targets.txt -m subdomain,checkurl,webanaylzer
+#        python3 IGScan.py -i 127.0.0.1
 
 parser = argparse.ArgumentParser(description="IGScan (Information Gathering Scan)")
 parser.add_argument('-u', '--url', help='Taget URL')
 parser.add_argument('-f', '--file', help='Place files for all domain names')
 parser.add_argument('-i', '--ip', help='192.168.2.1 or CIDR 192.168.2.0/24')
+parser.add_argument('-m', '--module', help='Select the module to detect the target', default='sudomain,checkurl,webanalyzer')  # 选择模块对目标进行探测
 
 args = parser.parse_args()  # 实例化
 targets_file = args.file
 hosts = args.ip
 url = args.url
+module = args.module
+print(IGScan_banner)
 
-if url != '' and url != None:
-    Subdomain = Subdomain(url=url, targets_file='')
-    Subdomain.url_subdomain()
-
-if targets_file != '' and targets_file != None:
-    Subdomain = Subdomain(url='', targets_file=targets_file)
-    Subdomain.file_subdomain()
-
-if hosts != '' and hosts != None:
-    Portscan = Portscan(hosts)
-    if '/' in hosts:
-        Portscan.masscan()
-    else:
-        Portscan.nmapscan()
+IGScan = IGScan(url, targets_file, hosts, module)
+IGScan.Start()
 
