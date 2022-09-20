@@ -1,8 +1,8 @@
-from Core.PortScan import Nmapscan
-from Core.PortScan import Masscan
+from core.get_port import Masscan
+from core.get_port import Nmapscan
 
 
-class PortScan:
+class PortScan(object):
 
     def __init__(self):
         pass

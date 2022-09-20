@@ -17,53 +17,54 @@ pip3 install -r requirements.txt -i  https://mirrors.aliyun.com/pypi/simple/
 ```
 ### 一、子域名探测
 - 探测单个域名 使用参数-u
-结果将会保存到`Output/subdomain.txt`
+结果将会保存到`output/subdomain.txt`
 
 Usage:
 ```
-python3 IGScan.py -u testphp.vulnweb.com -m subdomain
+python3 cli.py -d example.com -s 1
 ```
 - 探测多个域名
 首先需要编辑一个targets.txt，写入需要探测的域名，使用参数-f指定文件
 
 Usage: 
 ```
-python3 IGScan.py -f targets.txt -m subdomain
+python3 cli.py -f targets.txt -s 1
 ```
 ### 二、判断指定域名是否存活
 >如果是只单用这个模块的话，需要指定一个文本
 故没有-u参数，毕竟没必要对一个url进行存活探测
-但若是使用，是默认对Output/subdomain.txt中的文本进行探测
-结果将会保存到`Output/link.txt`
+但若是使用，是默认对output/subdomain.txt中的文本进行探测
+结果将会保存到`output/link.txt`
 
 Usage: 
 ```
-python3 IGScan.py -f targets.txt -m checkurl
+python3 cli.py -f targets.txt -c 1 
 ```
+
 ### 三、web指纹识别
 - 对单个url进行探测` (http://|https://)testphp.vulnweb.com`
 ```
-python3 IGScan.py -u http://testphp.vulnweb.com -m webanalyzer
+python3 cli.py -d http://testphp.vulnweb.com -w 1
 ```
 - 对某个文本中的url进行指纹识别
 注意这里的url需要` (http://|https://)testphp.vulnweb.com`
 ```
-python3 IGScan.py -f targets.txt -m webanalyzer
+python3 cli.py -f targets.txt -w 1 
 ```
 ### 四、组合使用
 将子域名结果保存到
-`Output/subdomain.txt`
+`output/subdomain.txt`
 存活url保存到
-`Output/link.txt`
+`output/link.txt`
 web指纹收集保存到
-`Output/fingerprint.txt`
+`output/fingerprint.txt`
 - 单个url
 ```
-python3 IGScan.py -u testphp.vulnweb.com  -m subdomain,checkurl,webanalyzer
+python3 cli.py -d example.com -s 1 -c 1 -w 1
 ```
 - 对某个文本中的url进行探测
 ```
-python3 IGScan.py -f targets.txt  -m subdomain,checkurl,webanalyzer
+python3 cli.py -f targets.txt -s 1 -c 1 -w 1
 ```
 
 ### 五、端口扫描
@@ -72,8 +73,8 @@ python3 IGScan.py -f targets.txt  -m subdomain,checkurl,webanalyzer
 
 Usage:
 ```
-python3 IGScan.py -i 192.168.2.1
-python3 IGScan.py -i 192.168.2.0/24
+python3 cli.py -i 192.168.2.1
+python3 cli.py -i 192.168.2.0/24
 ```
 
 

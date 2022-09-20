@@ -1,24 +1,23 @@
-import os
-import sys
 import time
-from Script.UseGetSubdomain import GetDomain
-from Script.UsePortScan import PortScan
-from Script.UseCheckURL import CheckURL
-from Script.UseWebAnaylzer import Anaylzer
 
-class Subdomain:
+from script.UseCheckURL import CheckURL
+from script.UseGetSubdomain import GetSubDomain
+from script.UsePortScan import PortScan
+from script.UseWebAnaylzer import Anaylzer
+
+
+class Subdomain(object):
     def __init__(self):
-        self.subdomain_file = 'Output/subdomain.txt'
+        self.subdomain_file = 'output/subdomain.txt'
 
     def url_subdomain(self, url):
-        Getdomain = GetDomain()
-        Getdomain.url_Getdomain(url)
+        GetSubDomain().get_subdomain(url)
 
     def file_subdomain(self, targets_filename):
-        Getdomain = GetDomain()
-        Getdomain.file_Getdomain(targets_filename)
+        GetSubDomain().file_get_subdomain(targets_filename)
 
-class Checkurl:
+
+class Checkurl(object):
     def url_Check(self):  # 当两个模块一起使用的时候可以
         Checkurl = CheckURL()
         Checkurl.url_start()
@@ -28,7 +27,7 @@ class Checkurl:
         Checkurl.file_start(targets_file)
 
 
-class Portscan:
+class Portscan(object):
     def __init__(self):
         pass
 
@@ -55,7 +54,7 @@ class Webanaylzer:
     def url_analyzer(self):
         w = Anaylzer()
         w.url_start()
+
     def file_analyzer(self, targets_file):
         w = Anaylzer()
         w.file_start(targets_file)
-

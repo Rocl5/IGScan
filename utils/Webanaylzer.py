@@ -1,5 +1,6 @@
-import webanalyzer
 import random
+
+import webanalyzer
 
 
 class Webanalyzer:
@@ -53,7 +54,7 @@ class Webanalyzer:
         w.aggression = 0   # agression模式级别
         w.allow_redirect = True  # 是否进行跳转
         w.timeout = 1  # requests timeout
-        w.rule_dir = "Utils/rules"  # 规则文件
+        w.rule_dir = "utils/rules"  # 规则文件
         # w.update_rules()  # 更新规则
         # print(os.getcwd())
         # w.reload_rules()  # 重新加载rules

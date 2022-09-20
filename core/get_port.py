@@ -1,14 +1,13 @@
-import nmap
 import masscan
+import nmap
+
 
 class Nmapscan:
-
 
     def __init__(self, hosts):
         self.hosts = hosts
         # self.ports = '1-65535'
         self.arguments = '-sS -T5 -Pn'
-
 
     def nmapscan(self):
         nmscan = nmap.PortScanner()  # 实例化
@@ -20,7 +19,7 @@ class Nmapscan:
         # print(all_hosts)
         # print(nm['scan'])
         # bool函数判断字典是否为空
-            # if bool(nm['scan']) != 0:
+        # if bool(nm['scan']) != 0:
         for host in all_hosts:
             if host == '':
                 print('\033[31m[ERRO]\033[0m No Surviving Hosts')
@@ -38,11 +37,14 @@ class Nmapscan:
                     target_port_state = nm['scan'][host]['tcp'][port]['state']  # 端口开放状态
                     target_service_name = nm['scan'][host]['tcp'][port]['name']  # 开启服务
                     if target_port_state == 'open':
-                        print('\033[32m[OPEN]\033[0m Port: %s Status: %s Service: %s' % (port, target_port_state, target_service_name))
+                        print('\033[32m[OPEN]\033[0m Port: %s Status: %s Service: %s' % (
+                        port, target_port_state, target_service_name))
                     elif target_port_state == 'closed':
-                        print('\033[31m[CLOS]\033[0m Port: %s Status: %s Service: %s' % (port, target_port_state, target_service_name))
+                        print('\033[31m[CLOS]\033[0m Port: %s Status: %s Service: %s' % (
+                        port, target_port_state, target_service_name))
                     else:
-                        print('\033[33m[FILT]\033[0m Port: %s Status: %s Service: %s' % (port, target_port_state, target_service_name))
+                        print('\033[33m[FILT]\033[0m Port: %s Status: %s Service: %s' % (
+                        port, target_port_state, target_service_name))
                 print()
             except:
                 print('\033[31m[WARN]\033[0m No ports open!')
@@ -51,12 +53,10 @@ class Nmapscan:
 
 class Masscan:
 
-
     def __init__(self, hosts):
         self.hosts = hosts
         self.ports = '0-10000,27017,27018'
         self.arguments = '--max-rate 10000'
-
 
     def masscan(self):
         print('\033[34m[INFO]\033[0m Masscan PortScan Module Running!')
@@ -71,7 +71,7 @@ class Masscan:
             for host in mascan.all_hosts:
                 print('\033[32m[TARG]\033[0m Target: %s' % host)
                 port_all = mas['scan'][host]['tcp'].keys()
-                port_all = list(port_all) # dict转list
+                port_all = list(port_all)  # dict转list
                 # print(port_all)
                 for port in port_all:
                     target_port_state = mas['scan'][host]['tcp'][port]['state']

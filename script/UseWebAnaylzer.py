@@ -1,7 +1,9 @@
-from Utils.Webanaylzer import Webanalyzer
 import queue
 import threading
 import time
+
+from utils.Webanaylzer import Webanalyzer
+
 q = queue.Queue()
 class Anaylzer:
     def __init__(self):
